@@ -37,9 +37,24 @@ node test/rebuild.mjs [--base <table>] --out <file> <mod .zip|.7z|folder>...
 
 `check-vanilla` round-trips the table (byte-identical for 3.0.3) and fails if any rule comes out smaller than vanilla. `rebuild` runs the same code as the page.
 
+## Checked in game
+
+On an AYN Thor (Peanuts Native 0.1.8, ACNH 3.0.3, Nov 25, 2026), the Jubbsticks 3.0.3 port was the only romfs mod, with the memory fix code mod. Its table was rebuilt on vanilla 3.0.3's: 48 entries raised, 695 geometry entries removed, 66,167 entries. The launch log's `DM_ROMFS_OVERLAY` showed the port was loaded.
+
+| Check | Rebuilt table | Port's own table |
+| --- | --- | --- |
+| Boot to title | pass | not run |
+| Load an existing island | pass | not run |
+| Walk outdoors | pass | not run |
+| New save: intro at the Nook Inc. counter, not a black screen | pass | pass |
+| Resident Services, Nook's Cranny, a house, the Roost | not tested: the test island is still at the tent stage | not tested |
+
+There were no crashes with either table. The new save was only followed to the airport counter, not through island generation. The port's own table only got the new-save check, because the rebuilt table passed everything else.
+
 ## Not yet checked
 
-- In game: the removed geometry entries. The Universal RSTB page reports a black screen when starting a new save with every model entry removed.
+- In game: buildings and interiors (Resident Services, Nook's Cranny, houses, the Roost), and a new save past the airport counter. The Universal RSTB page reports a black screen when starting a new save with every model entry removed.
+- A mod that changes a geometry model (the grass case, `Model/FldUnit.Nin_NX_NVN.zs`) next to the port.
 - 2.x (`RSTB`) tables: the layout is read and checked against the header length, but the rules were only fitted on 3.0.3.
 
 ## Files
