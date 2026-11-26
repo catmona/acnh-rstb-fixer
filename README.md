@@ -51,9 +51,11 @@ On an AYN Thor (Peanuts Native 0.1.8, ACNH 3.0.3, Nov 25, 2026), the Jubbsticks 
 
 There were no crashes with either table. The new save was only followed to the airport counter, not through island generation. The port's own table only got the new-save check, because the rebuilt table passed everything else.
 
+This shows the rebuilt table boots and loads. It does not yet test the removed entries. Of the 695 removed, 677 are the port's `Model/Layout_*` menu and cooking icons, and none of those menus were opened. The other 18 are the Roost (`IdrMuseumCafe00`), pansies, roses, the six wooden and flimsy tools and 8 fruit and petal icons, and none of those were on screen either.
+
 ## Not yet checked
 
-- In game: buildings and interiors (Resident Services, Nook's Cranny, houses, the Roost), and a new save past the airport counter. The Universal RSTB page reports a black screen when starting a new save with every model entry removed.
+- In game, the removed entries: the pocket and tool ring with port items, the cooking menu, holding a wooden tool, pansies and roses, and the Roost. Also buildings and interiors, and a new save past the airport counter. The Universal RSTB page reports a black screen when starting a new save with every model entry removed.
 - A mod that changes a geometry model (the grass case, `Model/FldUnit.Nin_NX_NVN.zs`) next to the port.
 - 2.x (`RSTB`) tables: the layout is read and checked against the header length, but the rules were only fitted on 3.0.3.
 
