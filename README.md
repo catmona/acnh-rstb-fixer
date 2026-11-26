@@ -51,11 +51,13 @@ On an AYN Thor (Peanuts Native 0.1.8, ACNH 3.0.3, Nov 25, 2026), the Jubbsticks 
 
 There were no crashes with either table. The new save was only followed to the airport counter, not through island generation. The port's own table only got the new-save check, because the rebuilt table passed everything else.
 
-This shows the rebuilt table boots and loads. It does not yet test the removed entries. Of the 695 removed, 677 are the port's `Model/Layout_*` menu and cooking icons, and none of those menus were opened. The other 18 are the Roost (`IdrMuseumCafe00`), pansies, roses, the six wooden and flimsy tools and 8 fruit and petal icons, and none of those were on screen either.
+The first run proved boot and load only, because no model with a removed entry was on screen. Of the 695 removed, 677 are the port's `Model/Layout_*` menu and cooking icons. The other 18 are the Roost (`IdrMuseumCafe00`), pansies, roses, the six wooden and flimsy tools and 8 fruit and petal icons.
+
+A second run (Nov 26) equipped the flimsy fishing rod. That is `Model/ToolFishingrodWood`, a vanilla model the port replaces, and its entry is removed. It drew correctly in hand, and the port ran about 5 minutes with no crash. So one removed entry is checked in game. The pocket icons that showed (weeds, branch, the rod) are not removed entries. That run's frame rate isn't evidence for or against the table: the Thor was at 1% battery, which caps the GPU.
 
 ## Not yet checked
 
-- In game, the removed entries: the pocket and tool ring with port items, the cooking menu, holding a wooden tool, pansies and roses, and the Roost. Also buildings and interiors, and a new save past the airport counter. The Universal RSTB page reports a black screen when starting a new save with every model entry removed.
+- In game, the other removed entries: fruit on the ground and in the pocket, the tool ring and cooking menu with port items, the other wooden tools, pansies and roses, and the Roost. Also buildings and interiors, and a new save past the airport counter. The Universal RSTB page reports a black screen when starting a new save with every model entry removed.
 - A mod that changes a geometry model (the grass case, `Model/FldUnit.Nin_NX_NVN.zs`) next to the port.
 - 2.x (`RSTB`) tables: the layout is read and checked against the header length, but the rules were only fitted on 3.0.3.
 
