@@ -27,4 +27,5 @@ State: the page and the rebuild work and are committed (local only, not pushed).
 - In game, the other removed entries: shake the native fruit tree (A, with no tool held), pick up the fruit and open the pocket, the tool ring with two or more tools, the cooking menu, the other wooden tools, pansies or roses, and the Roost. Then buildings and interiors on an island that has them, and a new save through island generation.
 - A test with a mod that changes a geometry model (the grass case, `Model/FldUnit.Nin_NX_NVN.zs`) next to the port.
 - 2.x (`RSTB`) tables: read, but the rules were fitted on 3.0.3 only.
-- Push to GitHub and turn on Pages (owner's call).
+- Pushed Nov 26 to https://github.com/catmona/acnh-rstb-fixer (public, owner's yes). Pages is not on yet.
+- This repo is the only source of the size-table code (owner, Nov 26: "i want them to use this repo and hav e it be the only source f it"). The QoL and Jubbsticks patcher pages use it as a git submodule, by the owner's choice. The QoL patcher session is this repo's only writer while it adds the entry points those pages need: mods-folder input with mod.json `enabled`, merging in the page's own output, and making the table win the mod order.
