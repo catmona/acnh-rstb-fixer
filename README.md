@@ -1,6 +1,6 @@
 # ACNH RSTB Fixer
 
-A web page that builds one `ResourceSizeTable.srsizetable` for a whole set of Animal Crossing: New Horizons mods. Add your mods (`.zip`, `.7z` or folders), press Build, and put the result on your SD card. Everything runs in the browser, and nothing is uploaded.
+A web page that builds one `ResourceSizeTable.srsizetable` for a whole set of Animal Crossing: New Horizons mods. Add your mods (`.zip`, `.7z` or folders), pick where you play, press Build, and install the small table mod it gives you. Everything runs in the browser, and nothing is uploaded.
 
 ## The problem
 
@@ -25,17 +25,53 @@ The game keeps a table of how much memory each file needs (`romfs/System/Resourc
    The margins cover the few vanilla entries that sit above the rule: up to 376 bytes (2 layouts), 32 (11 sound banks) and 16 (1 flow). An entry is only ever raised, never lowered.
 
 3. It writes the table as `RSTC` (3.0) or `RSTB` (2.x), whichever the base was, Yaz0 store-only. The game reads that fine.
+4. It puts the table in its own small mod, laid out for where you play (below), so it can win over the tables in your other mods.
 
 Why geometry models lose their entry: their load size depends on GPU buffers set by the shaders, so no simple rule fits. Universal RSTB (GameBanana 498070) removes the entries for all 58,613 vanilla model files, and the game sizes them itself. The Jubbsticks port also loads 529 models that have no entry. This tool removes only the entries for models your mods include.
+
+## Where you play
+
+Only one copy of the table counts, so the table mod has to be the copy the game picks. Each platform picks differently, and the page gives the steps for the one you choose (`PLATFORMS` in `lib/mods.js`).
+
+| Platform | Which copy of a file wins | The table mod |
+| --- | --- | --- |
+| Peanuts (Android) | the first-installed mod's, and the order can't be changed | `atmosphere/contents/01006F8002326000/romfs/...`. Install it first, then your other romfs mods again |
+| Switch (Atmosphère) | every mod shares one folder, so the last file copied there | same path. Copy it to the SD card after your other mods |
+| Eden, Citron, Sudachi and other yuzu forks | the first mod folder by name | `00 Size Table/romfs/...`, which sorts before other names |
+| Ryujinx (Ryubing) | the first mod folder in the order the OS lists them | `00 Size Table/romfs/...`. On Windows that comes first. On Linux and macOS, delete the other mods' tables |
+
+Ryujinx: read in `ModLoader.cs` (Ryubing, commit eaff2d33, Nov 23, 2026). `AddModsFromDirectory` walks folders with `EnumerateDirectories()` and doesn't sort them, so the order is whatever the file system gives. NTFS lists by name, and Linux and macOS file systems have no fixed order. In `AddFiles` the first copy of a file wins (`fileSet.Add`), and loose `romfs` folders come before `romfs.bin`. Mods are turned on and off in `games/<title id>/mods.json`.
+
+A picked folder can be one mod or a whole mods folder (a yuzu or Ryujinx mods folder, an SD card's `atmosphere/contents`, a copy of Peanuts' mods folder). Every folder named `romfs` is read as one mod. Mods for other games, and mods whose `mod.json` says `"enabled": false`, are left out.
+
+## Use it from another page
+
+The QoL and Jubbsticks patcher pages use this repo as a git submodule (at `docs/rstb`) and rebuild the table over every mod the player uses. A page loads one file and then makes one call:
+
+```html
+<script src="rstb/lib/page.js"></script>
+```
+
+```js
+const R = await ACNH_RSTB.load();   // loads formats.js, the zstd decoder, rstb.js and mods.js from next to page.js
+const mods = [await R.readMod('mod.zip', bytes) /* , ...(await R.folderMods(top, [[path, get]])).mods */];
+const r = await R.buildTableMod('peanuts', mods, baseTableOrNull, d => R.fzstd.decompress(d));
+// r.mod = { name, entries: [[path, bytes]], steps, label }; R.writeZip(r.mod.entries) is the zip. r.summary, r.notes, r.rows.
+```
+
+Everything goes on `self.ACNH_RSTB` only, so nothing clashes with the page's own names. Under Node, `require('./lib/mods.js')` and the others work as before. `buildTableMod` throws if no mod has a table and no base is given.
 
 ## Checks
 
 ```
 node test/check-vanilla.mjs <vanilla ResourceSizeTable.srsizetable> <vanilla romfs dir>...
-node test/rebuild.mjs [--base <table>] --out <file> <mod .zip|.7z|folder>...
+node test/rebuild.mjs [--base <table>] [--mod <peanuts|switch|yuzu|ryujinx>] --out <file> <mod .zip|.7z|folder>...
+node test/check-fit.mjs <table or table mod .zip> [--vanilla <table>] <mod .zip|.7z|folder>...
 ```
 
-`check-vanilla` round-trips the table (byte-identical for 3.0.3) and fails if any rule comes out smaller than vanilla. `rebuild` runs the same code as the page.
+`check-vanilla` round-trips the table (byte-identical for 3.0.3) and fails if any rule comes out smaller than vanilla. `rebuild` runs the same code as the page, and with `--mod` writes the table mod's zip. `check-fit` (the same `checkFit` the patcher pages' checks use) fails if any copy of any file in the mods needs more than its entry, a geometry model still has an entry, or an entry of vanilla's table or a mod's own table came out smaller.
+
+Last run, Nov 26, 2026: `rebuild --base` vanilla 3.0.3 `--mod peanuts` over the QoL Enhancements 1.1.0 download, the Jubbsticks patcher's zip and ACNH Combined 3.0.3 gave 64,596 entries in 1.3 s, and all four platforms wrote their zip. `check-fit` on it passed: 138 files sized, 1,275 geometry models with no entry, 0 entries lowered against vanilla, Jubbsticks or Combined. `check-vanilla`'s round trip is still byte-identical. Its rule half was not re-run after the lib was wrapped for `lib/page.js`, because the full 3.0.3 romfs wasn't on hand. That change didn't touch the rule code.
 
 ## Checked in game
 
@@ -60,12 +96,17 @@ A second run (Nov 26) equipped the flimsy fishing rod. That is `Model/ToolFishin
 - In game, the other removed entries: fruit on the ground and in the pocket, the tool ring and cooking menu with port items, the other wooden tools, pansies and roses, and the Roost. Also buildings and interiors, and a new save past the airport counter. The Universal RSTB page reports a black screen when starting a new save with every model entry removed.
 - A mod that changes a geometry model (the grass case, `Model/FldUnit.Nin_NX_NVN.zs`) next to the port.
 - 2.x (`RSTB`) tables: the layout is read and checked against the header length, but the rules were only fitted on 3.0.3.
+- The table as its own mod: on Peanuts, the table-only mod installed first (ahead of the mods it covers) hasn't been run in game. The Thor tests above had the table inside the port's own folder.
+- Switch, the yuzu forks and Ryujinx: nothing has been tested on them. Their steps come from how each one picks a file (Ryujinx from its source, above), not from a run.
 
 ## Files
 
 - `index.html`, `app.js`: the page
-- `lib/rstb.js`: table format, size rules, rebuild
+- `lib/page.js`: the one file other pages load (see above)
+- `lib/rstb.js`: table format, size rules, rebuild, `checkFit`
+- `lib/mods.js`: reading mods and mods folders, the platforms and their steps, the table mod, `buildTableMod`
 - `lib/formats.js`: zip, 7z, Yaz0 and CRC32, from acnh-jubbsticks-peanuts (same author)
+- `test/`: the checks above
 - `vendor/fzstd.umd.js`: zstd decoder (MIT, see `vendor/fzstd.LICENSE`)
 
 ## License

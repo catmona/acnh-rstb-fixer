@@ -1,4 +1,4 @@
-# In flight (Nov 25, 2026)
+# In flight (Nov 26, 2026)
 
 State: the page and the rebuild work and are committed (local only, not pushed). The first in-game test passed (README "Checked in game"). Publishing to GitHub and Pages waits on the owner's OK.
 
@@ -28,4 +28,6 @@ State: the page and the rebuild work and are committed (local only, not pushed).
 - A test with a mod that changes a geometry model (the grass case, `Model/FldUnit.Nin_NX_NVN.zs`) next to the port.
 - 2.x (`RSTB`) tables: read, but the rules were fitted on 3.0.3 only.
 - Pushed Nov 26 to https://github.com/catmona/acnh-rstb-fixer (public, owner's yes). Pages is not on yet.
-- This repo is the only source of the size-table code (owner, Nov 26: "i want them to use this repo and hav e it be the only source f it"). The QoL and Jubbsticks patcher pages use it as a git submodule, by the owner's choice. The QoL patcher session is this repo's only writer while it adds the entry points those pages need: mods-folder input with mod.json `enabled`, merging in the page's own output, and making the table win the mod order.
+- This repo is the only source of the size-table code (owner, Nov 26: "i want them to use this repo and hav e it be the only source f it"). The QoL and Jubbsticks patcher pages use it as a git submodule (`docs/rstb`), by the owner's choice.
+- Nov 26, about 7 PM: the entry points those pages need are committed here, not pushed (pushing waits on the owner's yes): `lib/page.js` (load it, then `ACNH_RSTB.load()`), `lib/mods.js` (`readMod`, `folderMods` with mod.json `enabled`, `PLATFORMS`, `tableMod`, `buildTableMod`), `checkFit` in `lib/rstb.js`, `test/check-fit.mjs`, and the page's "Where you play" picker. The README has the platforms, the Ryujinx order finding and what is untested (no Switch, yuzu-fork or Ryujinx run; the Peanuts table-only mod not run in game).
+- Open: the rule half of `check-vanilla` wasn't re-run (no full 3.0.3 romfs on this PC; the rule code is unchanged). Pages is not on yet.

@@ -42,6 +42,10 @@ td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowra
 .scroll { max-height: 360px; overflow: auto; }
 code { background: var(--well); border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; font-size: .88em; overflow-wrap: anywhere; }
 ol li { margin: 6px 0; }
+.plats { display: grid; gap: 6px; }
+.plats label { display: flex; gap: 10px; align-items: center; background: var(--raised); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+.plats label:has(input:checked) { border-color: var(--text); }
+.plats input { accent-color: var(--text); }
 #status { min-height: 1.5em; margin-top: 12px; }
 footer { margin-top: 48px; color: var(--muted); font-size: .9rem; }
 a { color: var(--hi); }
@@ -58,7 +62,7 @@ a { color: var(--hi); }
 
 <h2>1. Add your mods</h2>
 <div class="drop" id="drop">
-  <p>Drop mod <b>.zip</b> or <b>.7z</b> files or mod folders here.<br>For a <b>.rar</b>, extract it first and drop the folder.</p>
+  <p>Drop mod <b>.zip</b> or <b>.7z</b> files or mod folders here, or your whole mods folder.<br>For a <b>.rar</b>, extract it first and drop the folder.</p>
   <div class="row">
     <label class="btn">Choose files<input type="file" id="pickFiles" multiple accept=".zip,.7z" hidden></label>
     <label class="btn">Choose a folder<input type="file" id="pickDir" webkitdirectory hidden></label>
@@ -73,17 +77,17 @@ a { color: var(--hi); }
   <span id="baseName" class="muted" style="align-self:center"></span>
 </div>
 
-<h2>3. Build</h2>
+<h2>3. Where you play</h2>
+<div class="plats" id="plats"></div>
+
+<h2>4. Build</h2>
 <button class="primary" id="build" disabled>Build size table</button>
 <div id="status"></div>
 <div id="result"></div>
 
 <h2>Install</h2>
-<ol>
-  <li><b>Switch (Atmosphère):</b> unzip the download onto your SD card. It puts the table at <code>atmosphere/contents/01006F8002326000/romfs/System/Resource/ResourceSizeTable.srsizetable</code>, replacing the one that is there.</li>
-  <li><b>Emulators with a mod list:</b> add the download as its own mod and delete <code>ResourceSizeTable.srsizetable</code> from your other mods. This table already includes theirs.</li>
-  <li>Build again whenever you add, remove or update a mod.</li>
-</ol>
+<p class="muted">The download is a small mod that holds only the size table. The steps for where you play show up here after you build.</p>
+<ol id="steps"></ol>
 
 <details><summary>How it works</summary>
 <p>The page starts from the size tables your mods include (taking the larger size where they differ), then looks at every file in your mods:</p>
@@ -92,14 +96,12 @@ a { color: var(--hi); }
   <li><b>Models with geometry, collision or physics:</b> their memory depends on the shaders, so it removes their entry and the game sizes those files itself. Only the models your mods include are affected. The game's other entries stay as they are.</li>
   <li>Other files (Param, Stage and so on) have no entries in the game's table, so nothing changes for them.</li>
 </ul>
-<p>An entry is only ever raised, never lowered.</p>
+<p>An entry is only ever raised, never lowered. Which mod's table the game uses depends on where you play, so the download is laid out for your platform, with steps that make its table the one used.</p>
 </details>
 
 <footer>Free and open source (GPL-2.0). Not affiliated with Nintendo.</footer>
 </main>
-<script src="vendor/fzstd.umd.js"></script>
-<script src="lib/formats.js"></script>
-<script src="lib/rstb.js"></script>
+<script src="lib/page.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
