@@ -77,12 +77,14 @@ The first run proved boot and load only, because no model with a removed entry w
 
 A second run (Nov 26) equipped the flimsy fishing rod. That is `Model/ToolFishingrodWood`, a vanilla model the port replaces, and its entry is removed. It drew correctly in hand, and the port ran about 5 minutes with no crash. So one removed entry is checked in game. The pocket icons that showed (weeds, branch, the rod) are not removed entries. That run's frame rate isn't evidence for or against the table: the Thor was at 1% battery, which caps the GPU.
 
+A third run (Nov 26, 7:05 to 7:08 PM) used the table the way the page gives it: the table-only mod installed first, then QoL Enhancements 1.1.0 (no table), the Jubbsticks port (with its own table, which has to lose) and the memory fix. The table came from the page's code over those mods. The launch log's `DM_ROMFS_OVERLAY` listed the table mod first and the port last, so the table mod's copy is the one the game reads. Boot to title, loading the island, walking outdoors and the pocket (bell counter and items) all passed, with no crash, at 34 fps. Peanuts builds no merged table, so the file the game opened wasn't hashed: the evidence is the overlay order and the port running. The tool ring, fruit and QoL's catalog screens weren't reached.
+
 ## Not yet checked
 
 - In game, the other removed entries: fruit on the ground and in the pocket, the tool ring and cooking menu with port items, the other wooden tools, pansies and roses, and the Roost. Also buildings and interiors, and a new save past the airport counter. The Universal RSTB page reports a black screen when starting a new save with every model entry removed.
 - A mod that changes a geometry model (the grass case, `Model/FldUnit.Nin_NX_NVN.zs`) next to the port.
 - 2.x (`RSTB`) tables: the layout is read and checked against the header length, but the rules were only fitted on 3.0.3.
-- The table as its own mod: on Peanuts, the table-only mod installed first (ahead of the mods it covers) hasn't been run in game. The Thor tests above had the table inside the port's own folder.
+- The table as its own mod on Peanuts: run once (above) through boot, island and pocket. The screens QoL changes (catalog, Nook Shopping) weren't opened.
 - Switch, the yuzu forks and Ryujinx: nothing has been tested on them. Their steps come from how each one picks a file (Ryujinx from its source, above), not from a run.
 
 ## Use it from another page
